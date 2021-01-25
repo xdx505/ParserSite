@@ -21,6 +21,10 @@ public final class HTMLPage {
         return url;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     public void downloadHTML() {
         File file = createFile();
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
@@ -79,9 +83,5 @@ public final class HTMLPage {
 
         File file = new File(path, filename);
         return file;
-    }
-
-    private String getFilePath() {
-        return filePath;
     }
 }
