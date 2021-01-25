@@ -8,6 +8,9 @@ public class Main {
             String url = br.readLine();
             HTMLPage page = new HTMLPage(url);
             page.downloadHTML();
+
+            Parser parser = new Parser(page.getFilePath());
+            parser.parse();
         } catch (IOException e) {
             e.printStackTrace();
         }
