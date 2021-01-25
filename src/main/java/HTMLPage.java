@@ -2,6 +2,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +10,7 @@ import java.util.regex.Pattern;
 public final class HTMLPage {
     private final String url;
     private Document doc;
+    private String filePath;
 
     public HTMLPage(String url) {
         this.url = url;
@@ -17,6 +19,10 @@ public final class HTMLPage {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 
     public void downloadHTML() {
@@ -71,7 +77,10 @@ public final class HTMLPage {
     private File createFile() {
         String fileSeparator = System.getProperty("file.separator");
         String path = "data" + fileSeparator;
-        String filename = String.format("%s%s%s",getHostname(), getCurrentDate(), ".html");
+        String filename = String.format("%s%s%s", getHostname(), getCurrentDate(), ".html");
+
+        filePath = path + filename;
+
         File file = new File(path, filename);
         return file;
     }
