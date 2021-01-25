@@ -3,10 +3,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Parser {
     private final String filepath;
@@ -25,7 +22,7 @@ public class Parser {
         String onlyWords = text.toUpperCase().replaceAll(REGEX, " ");
         String[] words = onlyWords.split(" ");
 
-        Map<String, Integer> wordsMap = wordCount(words);
+        HashMap<String, Integer> wordsMap = wordCount(words);
         printResult(wordsMap);
     }
 
@@ -43,9 +40,9 @@ public class Parser {
         return Jsoup.parse(content.toString());
     }
 
-    private Map<String, Integer> wordCount(String[] words) {
+    private HashMap<String, Integer> wordCount(String[] words) {
         ArrayList<String> wordsList = new ArrayList(Arrays.asList(words));
-        Map<String, Integer> map = new HashMap();
+        HashMap<String, Integer> map = new HashMap();
 
         for (int i = 0; i < wordsList.size(); i++) {
             String firstWord = wordsList.get(i);
@@ -63,12 +60,13 @@ public class Parser {
             i--;
             count = 1;
         }
+
         return map;
     }
 
-    private void printResult(Map<String, Integer> map) {
-        for (Map.Entry pair : map.entrySet()) {
-            System.out.println(pair.getKey() + " - " + pair.getValue());
-        }
+    private void printResult(HashMap<String, Integer> map) {
+        map.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEach(System.out::println);
     }
 }
