@@ -1,11 +1,9 @@
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class HTMLPage {
     private final String url;
@@ -24,15 +22,17 @@ public final class HTMLPage {
     }
 
     public void downloadHTML() {
-        Document doc = connectSite(url);
         File file = createFile();
         filepath = file.getAbsolutePath();
 
+        Connection connection = Jsoup.connect(url)
+                .userAgent("Chrome/4.0.249.0 Safari/532.5")
+                .referrer("http://www.google.com");
+
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath));
-             BufferedReader bufferedReader = new BufferedReader(new StringReader(doc.html()))) {
-            while (true) {
+             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(createStream(connection)))) {
+            while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
-                if (line == null) break;
                 bufferedWriter.write(line);
             }
         } catch (IOException e) {
@@ -40,17 +40,14 @@ public final class HTMLPage {
         }
     }
 
-    private Document connectSite(String url) {
-        Document document = null;
+    private BufferedInputStream createStream(Connection connection) {
+        BufferedInputStream stream = null;
         try {
-            document = Jsoup.connect(url)
-                    .userAgent("Chrome/4.0.249.0 Safari/532.5")
-                    .referrer("http://www.google.com")
-                    .get();
+            stream = connection.execute().bodyStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return document;
+        return stream;
     }
 
     private String getCurrentDate() {
