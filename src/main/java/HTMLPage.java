@@ -1,6 +1,5 @@
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -29,18 +28,20 @@ public final class HTMLPage {
                 .userAgent("Chrome/4.0.249.0 Safari/532.5")
                 .referrer("http://www.google.com");
 
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath));
-             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(createStream(connection)))) {
-            while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                bufferedWriter.write(line);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
+        BufferedInputStream bufferedInputStream = returnBodyAsStream(connection)) {
+            while (true) {
+                assert bufferedInputStream != null;
+                if (!(bufferedInputStream.available() > 0)) break;
+                byte fragment = (byte) bufferedInputStream.read();
+                fileOutputStream.write(fragment);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private BufferedInputStream createStream(Connection connection) {
+    private BufferedInputStream returnBodyAsStream(Connection connection) {
         BufferedInputStream stream = null;
         try {
             stream = connection.execute().bodyStream();
