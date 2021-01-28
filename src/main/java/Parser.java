@@ -60,6 +60,6 @@ public class Parser {
 
     private void printResult(HashMap<String, Integer> map) {
         map.entrySet().stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed());
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()).forEach(System.out::println);
     }
 }
