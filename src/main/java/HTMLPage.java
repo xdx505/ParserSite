@@ -58,20 +58,10 @@ public final class HTMLPage {
     }
 
     private String getHostname() {
-        String hostname = "";
-        String regex = "^((http[s]?|ftp):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$";
-
-        Pattern pattern = Pattern.compile(regex, 2);
-        Matcher matcher = pattern.matcher(url);
-
-        while (matcher.find()) {
-            hostname = matcher.group(3);
-        }
-        String[] hostnameParts = hostname.split("\\.");
-
-        if (hostnameParts.length > 3) return hostnameParts[2];
-        if (hostnameParts.length == 3) return hostnameParts[1];
-        return hostnameParts[0];
+        String[] domainParts = url.split("//")[1].split("/")[0].split("\\.");
+        if (domainParts.length == 3) return domainParts[1];
+        if (domainParts.length > 3) return domainParts[2];
+        return domainParts[0];
     }
 
     private File createFile() {
