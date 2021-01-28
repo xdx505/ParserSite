@@ -9,12 +9,10 @@ import java.util.regex.Pattern;
 
 public final class HTMLPage {
     private final String url;
-    private Document doc;
-    private String filePath;
+    private String filepath;
 
     public HTMLPage(String url) {
         this.url = url;
-        this.doc = connectSite(url);
     }
 
     public String getUrl() {
@@ -22,12 +20,15 @@ public final class HTMLPage {
     }
 
     public String getFilePath() {
-        return filePath;
+        return filepath;
     }
 
     public void downloadHTML() {
+        Document doc = connectSite(url);
         File file = createFile();
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+        filepath = file.getAbsolutePath();
+
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath));
              BufferedReader bufferedReader = new BufferedReader(new StringReader(doc.html()))) {
             while (true) {
                 String line = bufferedReader.readLine();
@@ -65,13 +66,7 @@ public final class HTMLPage {
     }
 
     private File createFile() {
-        String fileSeparator = System.getProperty("file.separator");
-        String path = "data" + fileSeparator;
         String filename = String.format("%s%s%s", getHostname(), getCurrentDate(), ".html");
-
-        filePath = path + filename;
-
-        File file = new File(path, filename);
-        return file;
+        return new File(new File("data"), filename);
     }
 }
