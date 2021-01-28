@@ -9,7 +9,7 @@ public class Main {
             HTMLPage page = new HTMLPage(url);
             page.downloadHTML();
 
-            Parser parser = new Parser(page.getFilePath());
+            Parser parser = new Parser(page);
             parser.parse();
         } catch (IOException e) {
             e.printStackTrace();
