@@ -62,9 +62,14 @@ public final class HTMLPage {
     }
 
     private static String getHostname() {
-        String[] domainParts = url.split("//")[1].split("/")[0].split("\\.");
-        if (domainParts.length == 3) return domainParts[1];
-        if (domainParts.length > 3) return domainParts[2];
+        String[] domainParts = new String[0];
+        try {
+            domainParts = url.split("//")[1].split("/")[0].split("\\.");
+            if (domainParts.length == 3) return domainParts[1];
+            if (domainParts.length > 3) return domainParts[2];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
         return domainParts[0];
     }
 }
