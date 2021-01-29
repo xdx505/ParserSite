@@ -49,12 +49,12 @@ public class Parser {
                     }
                 }
             }
-
             map.put(firstWord, count);
             wordsList.remove(i);
             i--;
             count = 1;
         }
+
         return map;
     }
 
