@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ParserTest {
-    final String pagesFile = "C:\\Users\\Dan\\IdeaProjects\\ParserSite\\build\\libs\\pages\\meduza_28.01_2213.html";
+    final String pagesFile = "C:\\Users\\Dan\\IdeaProjects\\ParserSite\\build\\libs\\pages\\habr_29.01_1545.html";
 
     @Test
     public void parseTest() throws IOException {
@@ -33,7 +33,6 @@ public class ParserTest {
         for (int i = 0; i < wordsList.size(); i++) {
             String firstWord = wordsList.get(i);
             int count = 1;
-            if (!firstWord.equals("")) {
                 for (int j = 1; j < wordsList.size(); j++) {
                     String secondWord = wordsList.get(j);
                     if (firstWord.equals(secondWord)) {
@@ -41,7 +40,6 @@ public class ParserTest {
                         wordsList.remove(j);
                         j--;
                     }
-                }
             }
             map.put(firstWord, count);
             wordsList.remove(i);
@@ -54,7 +52,7 @@ public class ParserTest {
 
     private void printResult(HashMap<String, Integer> map) {
         map.entrySet().stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue())
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .forEach(System.out::println);
     }
 }
