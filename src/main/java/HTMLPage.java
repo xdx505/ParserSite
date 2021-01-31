@@ -53,7 +53,8 @@ public final class HTMLPage {
                 .ignoreContentType(true)
                 .ignoreHttpErrors(true)
                 .followRedirects(true)
-                .maxBodySize(0);
+                .maxBodySize(0)
+                .timeout(5000);
     }
 
     private static String getCurrentDate() {
