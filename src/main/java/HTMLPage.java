@@ -41,7 +41,7 @@ public final class HTMLPage {
         try {
             stream = connection.execute().bodyStream();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Не удалось подключиться к сайту. Проверьте корректность URL адреса");
         }
         return stream;
     }
@@ -69,7 +69,7 @@ public final class HTMLPage {
             if (domainParts.length == 3) return domainParts[1];
             if (domainParts.length > 3) return domainParts[2];
         } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
+            System.out.println("Неверный URL сайта");
         }
         return domainParts[0];
     }

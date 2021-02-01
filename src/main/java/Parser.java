@@ -26,7 +26,7 @@ public class Parser {
             ArrayList<String> textFromLines = wordsExtractor(linesFromBlocks);
             printResult(wordCount(textFromLines));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Ошибка ввода - вывода");
         }
     }
 
