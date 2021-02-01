@@ -3,30 +3,33 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
-import org.jsoup.select.Elements;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.*;
 import java.util.*;
 
-public class Parser {
-    private final String path;
+public class ParserTest {
+    final String pagesFile = "C:\\Users\\Dan\\IdeaProjects\\ParserSite\\build\\libs\\pages\\textEmptyBody.html";
 
-    public Parser(HTMLPage page) {
-        this.path = page.getFilePath();
+    @Test
+    public void getAllNodesTest() throws IOException {
+        File file = new File(pagesFile);
+        Document page = Jsoup.parse(file, "UTF-8");
+
+        Element bodyFrame = page.body();
+
+        ArrayList<TextNode> textNodeList = getAllTextNodes(bodyFrame);
+        ArrayList<String> linesFromBlocks = injectLines(textNodeList);
+        ArrayList<String> textFromLines = wordsExtractor(linesFromBlocks);
+        printResult(wordCount(textFromLines));
+
     }
 
-    public void parse() {
-        try {
-            File file = new File(path);
-            Document page = Jsoup.parse(file, "UTF-8");
-            Element bodyFrame = page.body();
-
-            ArrayList<TextNode> textNodeList = getAllTextNodes(bodyFrame);
-            ArrayList<String> linesFromBlocks = injectLines(textNodeList);
-            ArrayList<String> textFromLines = wordsExtractor(linesFromBlocks);
-            printResult(wordCount(textFromLines));
-        } catch (IOException e) {
-            System.out.println("Ошибка ввода - вывода");
+    private void print(ArrayList list) throws InterruptedException {
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i).toString());
+            Thread.sleep(1000);
         }
     }
 
@@ -93,6 +96,7 @@ public class Parser {
 
     private void printResult(HashMap<String, Integer> map) {
         map.entrySet().stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue()).forEach(System.out::println);
+                .sorted(Map.Entry.<String, Integer>comparingByValue())
+                .forEach(System.out::println);
     }
 }

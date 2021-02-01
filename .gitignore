@@ -76,7 +76,6 @@ cmake-build-*/
 
 # IntelliJ
 out/
-test/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -103,9 +102,6 @@ fabric.properties
 .gradle
 /build/
 gradle/
-gradlew
-gradlew.bat
-settings.gradle
 
 # Ignore Gradle GUI config
 gradle-app.setting

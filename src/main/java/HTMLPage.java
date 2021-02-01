@@ -1,87 +1,76 @@
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class HTMLPage {
-    private final String url;
-    private Document doc;
-    private String filePath;
+    private static String url;
+    private String filepath;
 
     public HTMLPage(String url) {
         this.url = url;
-        this.doc = connectSite(url);
-    }
-
-    public String getUrl() {
-        return url;
     }
 
     public String getFilePath() {
-        return filePath;
+        return filepath;
     }
 
     public void downloadHTML() {
-        File file = createFile();
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
-             BufferedReader bufferedReader = new BufferedReader(new StringReader(doc.html()))) {
-            while (true) {
-                String line = bufferedReader.readLine();
-                if (line == null) break;
-                bufferedWriter.write(line);
+        File file = createHTMLFile();
+        filepath = file.getAbsolutePath();
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
+             BufferedInputStream bufferedInputStream = returnBodyAsStream(siteConnection(url))) {
+            while (bufferedInputStream.available() > 0) {
+                byte fragment = (byte) bufferedInputStream.read();
+                fileOutputStream.write(fragment);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Document connectSite(String url) {
-        Document document = null;
-        try {
-            document = Jsoup.connect(url)
-                    .userAgent("Chrome/4.0.249.0 Safari/532.5")
-                    .referrer("http://www.google.com")
-                    .get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return document;
+    private File createHTMLFile() {
+        String filename = String.format("%s%s%s", getHostname(), getCurrentDate(), ".html");
+        return new File(new File("pages"), filename);
     }
 
-    private String getCurrentDate() {
+    private BufferedInputStream returnBodyAsStream(Connection connection) {
+        BufferedInputStream stream = null;
+        try {
+            stream = connection.execute().bodyStream();
+        } catch (IOException e) {
+            System.out.println("Не удалось подключиться к сайту. Проверьте корректность URL адреса");
+        }
+        return stream;
+    }
+
+    private Connection siteConnection(String url) {
+        return Jsoup.connect(url)
+                .userAgent("Chrome/4.0.249.0 Safari/532.5")
+                .referrer("http://www.google.com")
+                .ignoreContentType(true)
+                .ignoreHttpErrors(true)
+                .followRedirects(true)
+                .maxBodySize(0)
+                .timeout(5000);
+    }
+
+    private static String getCurrentDate() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("_dd.MM_HHmm");
         return simpleDateFormat.format(System.currentTimeMillis());
     }
 
-    private String getHostname() {
-        String hostname = "";
-        String regex = "^((http[s]?|ftp):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$";
-
-        Pattern pattern = Pattern.compile(regex, 2);
-        Matcher matcher = pattern.matcher(url);
-
-        while (matcher.find()) {
-            hostname = matcher.group(3);
+    private static String getHostname() {
+        String[] domainParts = new String[0];
+        try {
+            domainParts = url.split("//")[1].split("/")[0].split("\\.");
+            if (domainParts.length == 3) return domainParts[1];
+            if (domainParts.length > 3) return domainParts[2];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Неверный URL сайта");
         }
-        String[] hostnameParts = hostname.split("\\.");
-
-        if (hostnameParts.length > 3) return hostnameParts[2];
-        if (hostnameParts.length == 3) return hostnameParts[1];
-        return hostnameParts[0];
-    }
-
-    private File createFile() {
-        String fileSeparator = System.getProperty("file.separator");
-        String path = "data" + fileSeparator;
-        String filename = String.format("%s%s%s", getHostname(), getCurrentDate(), ".html");
-
-        filePath = path + filename;
-
-        File file = new File(path, filename);
-        return file;
+        return domainParts[0];
     }
 }
