@@ -102,9 +102,6 @@ fabric.properties
 .gradle
 /build/
 gradle/
-gradlew
-gradlew.bat
-settings.gradle
 
 # Ignore Gradle GUI config
 gradle-app.setting
