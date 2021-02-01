@@ -10,25 +10,13 @@ import java.io.*;
 import java.util.*;
 
 public class ParserTest {
-    final String pagesFile = "C:\\Users\\Dan\\IdeaProjects\\ParserSite\\build\\libs\\pages\\habr_29.01_1545.html";
-    final String filepath = "C:\\Users\\Dan\\IdeaProjects\\ParserSite\\build\\libs\\pages\\testNodes.html";
+    final String pagesFile = "C:\\Users\\Dan\\IdeaProjects\\ParserSite\\build\\libs\\pages\\textEmptyBody.html";
 
     @Test
-    public void parseTest() throws IOException {
-        File file = new File(pagesFile);
-        Document document = Jsoup.parse(file, "UTF-8");
-        document.getElementsByTag("pre").remove();
-        document.getElementsByTag("img").remove();
-        document.normalise(); // Moves any text content that is not in the body element into the body.
-
-
-//        printResult(wordCount(wordsExtractor(document)));
-    }
-
-    @Test
-    public void getAllNodesTest() throws IOException, InterruptedException {
+    public void getAllNodesTest() throws IOException {
         File file = new File(pagesFile);
         Document page = Jsoup.parse(file, "UTF-8");
+
         Element bodyFrame = page.body();
 
         ArrayList<TextNode> textNodeList = getAllTextNodes(bodyFrame);

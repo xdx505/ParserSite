@@ -25,4 +25,15 @@ public class HTMLPageTest {
     private BufferedInputStream getStream() {
         return null;
     }
+
+    @Test
+    public void testStackTrace() {
+        try{
+            int i = 23/0;
+            System.out.println(i);
+        } catch (ArithmeticException e) {
+            System.out.println("Error");
+            e.getClass().getSimpleName();
+        }
+    }
 }
